@@ -1,10 +1,11 @@
-// This test file corresponds to an abstract class/interface definition.
-//
-// Actual logic testing occurs in the test files for the concrete
-// implementations.
-//
-// See concrete implementation tests for coverage and behavior verification.
+import 'package:ht_crud_client/ht_crud_client.dart';
+import 'package:test/fake.dart';
+import 'package:test/test.dart';
+
+class FakeHtCrudClient extends Fake implements HtCrudClient<Object> {}
 
 void main() {
-  // No tests here; focus is on concrete implementation tests.
+  test('NotificationsClient can be implemented', () {
+    expect(FakeHtCrudClient.new, returnsNormally);
+  });
 }
