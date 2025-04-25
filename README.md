@@ -16,7 +16,9 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ht_crud_client: ^latest # Replace with the actual version constraint
+  ht_crud_client:
+    git:
+      url: https://github.com/headlines-toolkit/ht-crud-client.git
 ```
 
 Then, import the package:
