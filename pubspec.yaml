@@ -1,5 +1,5 @@
 name: ht_crud_client
-description: A Very Good Project created by Very Good CLI.
+description:  abstract interface (`HtCrudClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`.
 repository: https://github.com/headlines-toolkit/ht-crud-client
 publish_to: none
 
