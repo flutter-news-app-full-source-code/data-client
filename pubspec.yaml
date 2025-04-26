@@ -1,5 +1,5 @@
 name: ht_data_client
-description: abstract interface (`HtDataClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`.
+description: generic, abstract interface (HtDataClient<T>) for interacting with data resources of type T.
 repository: https://github.com/headlines-toolkit/ht-data-client
 publish_to: none
 

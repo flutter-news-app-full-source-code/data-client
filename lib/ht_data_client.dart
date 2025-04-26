@@ -1,5 +1,4 @@
-/// abstract interface (`HtDataClient<T>`) for performing standard CRUD
-/// operations on a resource of type `T`.
+/// Generic, abstract interface for interacting with data resources of type T.
 library;
 
 export 'src/ht_data_client.dart';
