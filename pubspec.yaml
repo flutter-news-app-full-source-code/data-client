@@ -1,10 +1,10 @@
-name: ht_crud_client
-description:  abstract interface (`HtCrudClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`.
-repository: https://github.com/headlines-toolkit/ht-crud-client
+name: ht_data_client
+description: abstract interface (`HtDataClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`.
+repository: https://github.com/headlines-toolkit/ht-data-client
 publish_to: none
 
 environment:
-    sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   ht_http_client:

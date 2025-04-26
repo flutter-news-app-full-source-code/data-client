@@ -1,4 +1,4 @@
-# ht_crud_client
+# ht_data_client
 
 ![coverage: percentage](https://img.shields.io/badge/coverage-100-green)
 [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
@@ -6,7 +6,7 @@
 
 ## Description
 
-This package defines a generic, abstract interface (`HtCrudClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`. It establishes a contract for data clients, expecting implementations to handle underlying communication (like HTTP) and serialization/deserialization.
+This package defines a generic, abstract interface (`HtDataClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`. It establishes a contract for data clients, expecting implementations to handle underlying communication (like HTTP) and serialization/deserialization.
 
 This package is designed to be implemented by concrete client classes that interact with specific data sources or APIs.
 
@@ -16,7 +16,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ht_crud_client:
+  ht_data_client:
     git:
       url: https://github.com/headlines-toolkit/ht-crud-client.git
 ```
@@ -24,7 +24,7 @@ dependencies:
 Then, import the package:
 
 ```dart
-import 'package:ht_crud_client/ht_crud_client.dart';
+import 'package:ht_data_client/ht_data_client.dart';
 ```
 
 ## Features
@@ -41,12 +41,12 @@ import 'package:ht_crud_client/ht_crud_client.dart';
 
 ## Usage
 
-Since `HtCrudClient<T>` is an abstract class, you need to create a concrete implementation for your specific resource type and data source (e.g., an HTTP API).
+Since `HtDataClient<T>` is an abstract class, you need to create a concrete implementation for your specific resource type and data source (e.g., an HTTP API).
 
 **Conceptual Implementation Example:**
 
 ```dart
-import 'package:ht_crud_client/ht_crud_client.dart';
+import 'package:ht_data_client/ht_data_client.dart';
 import 'package:ht_http_client/ht_http_client.dart'; // For HtHttpClient and exceptions
 
 // Define your data model
@@ -74,7 +74,7 @@ class MyDataModel {
 }
 
 // Concrete implementation using HtHttpClient
-class MyDataApiClient implements HtCrudClient<MyDataModel> {
+class MyDataApiClient implements HtDataClient<MyDataModel> {
   MyDataApiClient({required HtHttpClient httpClient})
       : _httpClient = httpClient;
 
