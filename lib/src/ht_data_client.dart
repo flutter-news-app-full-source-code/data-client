@@ -8,8 +8,9 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 typedef ToJson<T> = Map<String, dynamic> Function(T item);
 
 /// {@template ht_data_client}
-/// Defines the interface for a generic client performing standard CRUD
-/// (Create, Read, Update, Delete) operations for a resource type [T].
+/// Defines a generic interface for clients interacting with data resources of type [T].
+/// While primarily focused on standard CRUD (Create, Read, Update, Delete) operations,
+/// this interface can be extended to include other data access methods.
 ///
 /// Implementations of this interface are expected to handle the underlying
 /// communication (e.g., HTTP requests) and manage serialization/deserialization
@@ -74,6 +75,17 @@ abstract class HtDataClient<T> {
   /// Returns a list of deserialized items matching the query.
   ///
   /// Supports pagination using the [startAfterId] and [limit] parameters.
+  ///
+  /// Example query map:
+  /// ```dart
+  /// {
+  ///   'authorId': 'some-author-id',
+  ///   'category': 'technology',
+  ///   'sortBy': 'publishDate',
+  ///   'sortOrder': 'desc',
+  ///   'status': 'published',
+  /// }
+  /// ```
   ///
   /// Throws [HtHttpException] or its subtypes on failure:
   /// - [BadRequestException] for invalid query parameters.
