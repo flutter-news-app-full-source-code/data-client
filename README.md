@@ -6,7 +6,7 @@
 
 ## Description
 
-This package defines a generic, abstract interface (`HtDataClient<T>`) for performing standard CRUD (Create, Read, Update, Delete) operations on a resource of type `T`. It establishes a contract for data clients, expecting implementations to handle underlying communication (like HTTP) and serialization/deserialization.
+This package defines a generic, abstract interface (`HtDataClient<T>`) for interacting with data resources of type `T`. While its core focus is on providing a standardized contract for common data access patterns, including standard CRUD (Create, Read, Update, Delete) operations, the interface is designed to be extensible to support additional resource-specific methods. It establishes a contract for data clients, expecting implementations to handle underlying communication (like HTTP) and manage serialization/deserialization.
 
 This package is designed to be implemented by concrete client classes that interact with specific data sources or APIs.
 
@@ -18,7 +18,7 @@ Add the package to your `pubspec.yaml`:
 dependencies:
   ht_data_client:
     git:
-      url: https://github.com/headlines-toolkit/ht-crud-client.git
+      url: https://github.com/headlines-toolkit/ht-data-client.git
 ```
 
 Then, import the package:
@@ -29,19 +29,22 @@ import 'package:ht_data_client/ht_data_client.dart';
 
 ## Features
 
-*   **Generic CRUD Interface:** Defines standard methods for:
+*   **Generic Data Client Interface:** Defines standard methods for common data access patterns, including:
     *   `create(T item)`: Create a new resource.
     *   `read(String id)`: Read a single resource by ID.
-    *   `readAll()`: Read all resources.
+    *   `readAll({String? startAfterId, int? limit})`: Read all resources with optional pagination.
+    *   `readAllByQuery(Map<String, dynamic> query, {String? startAfterId, int? limit})`: Read multiple resources based on a query with optional pagination.
     *   `update(String id, T item)`: Update an existing resource.
     *   `delete(String id)`: Delete a resource by ID.
+*   **Pagination Support:** Includes parameters for `startAfterId` and `limit` in methods returning multiple items.
+*   **Querying Capability:** Provides a method to fetch data based on structured query parameters.
 *   **Type Safety:** Uses generics (`<T>`) to work with any data model.
 *   **Serialization Agnostic:** Defines `FromJson<T>` and `ToJson<T>` typedefs, allowing implementations to use their preferred serialization logic.
 *   **Standardized Error Handling:** Specifies expected `HtHttpException` subtypes (from `package:ht_http_client`) that implementations should throw on failure.
 
 ## Usage
 
-Since `HtDataClient<T>` is an abstract class, you need to create a concrete implementation for your specific resource type and data source (e.g., an HTTP API).
+Since `HtDataClient<T>` is an abstract class, you need to create a concrete implementation for your specific resource type and data source (e.g., an HTTP API). This implementation will provide the logic for the CRUD, querying, and pagination methods defined by the interface.
 
 **Conceptual Implementation Example:**
 
