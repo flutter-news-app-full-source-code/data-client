@@ -1,5 +1,6 @@
 import 'package:ht_http_client/ht_http_client.dart'
     hide HtHttpClient, TokenProvider;
+import 'package:ht_shared/ht_shared.dart';
 
 /// A function that converts a JSON map to an object of type [T].
 typedef FromJson<T> = T Function(Map<String, dynamic> json);
@@ -8,9 +9,12 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 typedef ToJson<T> = Map<String, dynamic> Function(T item);
 
 /// {@template ht_data_client}
-/// Defines a generic interface for clients interacting with data resources of type [T].
-/// While primarily focused on standard CRUD (Create, Read, Update, Delete) operations,
-/// this interface can be extended to include other data access methods.
+/// Defines a generic interface for clients interacting with data resources
+/// of type [T].
+///
+/// While primarily focused on standard CRUD (Create, Read, Update, Delete)
+/// operations, this interface can be extended to include other data access
+/// methods.
 ///
 /// Implementations of this interface are expected to handle the underlying
 /// communication (e.g., HTTP requests) and manage serialization/deserialization
@@ -21,8 +25,8 @@ abstract class HtDataClient<T> {
   ///
   /// Implementations should handle sending the [item] data to the appropriate
   /// endpoint (typically via POST).
-  /// Returns the created item, potentially populated with server-assigned data
-  /// (like an ID).
+  /// Returns a [SuccessApiResponse] containing the created item, potentially
+  /// populated with server-assigned data (like an ID).
   ///
   /// Throws [HtHttpException] or its subtypes on failure:
   /// - [BadRequestException] for validation errors or malformed requests.
@@ -32,13 +36,13 @@ abstract class HtDataClient<T> {
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw other exceptions during serialization.
-  Future<T> create(T item);
+  Future<SuccessApiResponse<T>> create(T item);
 
   /// Reads a single resource item of type [T] by its unique [id].
   ///
   /// Implementations should handle retrieving the data for the given [id]
   /// (typically via GET `endpoint/{id}`).
-  /// Returns the deserialized item.
+  /// Returns a [SuccessApiResponse] containing the deserialized item.
   ///
   /// Throws [HtHttpException] or its subtypes on failure:
   /// - [NotFoundException] if no item exists with the given [id].
@@ -48,13 +52,14 @@ abstract class HtDataClient<T> {
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw other exceptions during deserialization.
-  Future<T> read(String id);
+  Future<SuccessApiResponse<T>> read(String id);
 
   /// Reads all resource items of type [T].
   ///
   /// Implementations should handle retrieving the complete collection of items
   /// (typically via GET `endpoint`).
-  /// Returns a list of deserialized items.
+  /// Returns a [SuccessApiResponse] containing a [PaginatedResponse] with the
+  /// list of deserialized items.
   ///
   /// Supports pagination using the [startAfterId] and [limit] parameters.
   ///
@@ -66,13 +71,17 @@ abstract class HtDataClient<T> {
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw [FormatException] if the received data (e.g., list items)
   /// is malformed during deserialization.
-  Future<List<T>> readAll({String? startAfterId, int? limit});
+  Future<SuccessApiResponse<PaginatedResponse<T>>> readAll({
+    String? startAfterId,
+    int? limit,
+  });
 
   /// Reads multiple resource items of type [T] based on a [query].
   ///
   /// Implementations should handle retrieving data based on the provided
   /// [query] parameters (typically via GET `endpoint` with query parameters).
-  /// Returns a list of deserialized items matching the query.
+  /// Returns a [SuccessApiResponse] containing a [PaginatedResponse] with the
+  /// list of deserialized items matching the query.
   ///
   /// Supports pagination using the [startAfterId] and [limit] parameters.
   ///
@@ -96,7 +105,7 @@ abstract class HtDataClient<T> {
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw [FormatException] if the received data (e.g., list items)
   /// is malformed during deserialization.
-  Future<List<T>> readAllByQuery(
+  Future<SuccessApiResponse<PaginatedResponse<T>>> readAllByQuery(
     Map<String, dynamic> query, {
     String? startAfterId,
     int? limit,
@@ -106,7 +115,8 @@ abstract class HtDataClient<T> {
   ///
   /// Implementations should handle sending the updated [item] data for the
   /// specified [id] (typically via PUT `endpoint/{id}`).
-  /// Returns the updated item as confirmed by the source.
+  /// Returns a [SuccessApiResponse] containing the updated item as confirmed
+  /// by the source.
   ///
   /// Throws [HtHttpException] or its subtypes on failure:
   /// - [BadRequestException] for validation errors or malformed requests.
@@ -117,7 +127,7 @@ abstract class HtDataClient<T> {
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw other exceptions during serialization/deserialization.
-  Future<T> update(String id, T item);
+  Future<SuccessApiResponse<T>> update(String id, T item);
 
   /// Deletes a resource item identified by [id].
   ///
