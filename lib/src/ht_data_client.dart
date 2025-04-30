@@ -1,5 +1,3 @@
-import 'package:ht_http_client/ht_http_client.dart'
-    hide HtHttpClient, TokenProvider;
 import 'package:ht_shared/ht_shared.dart';
 
 /// A function that converts a JSON map to an object of type [T].
