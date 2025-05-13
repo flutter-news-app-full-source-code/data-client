@@ -30,12 +30,12 @@ import 'package:ht_data_client/ht_data_client.dart';
 ## Features
 
 *   **Generic Data Client Interface:** Defines standard methods for common data access patterns, including:
-    *   `create(T item)`: Create a new resource.
-    *   `read(String id)`: Read a single resource by ID.
-    *   `readAll({String? startAfterId, int? limit})`: Read all resources with optional pagination.
-    *   `readAllByQuery(Map<String, dynamic> query, {String? startAfterId, int? limit})`: Read multiple resources based on a query with optional pagination.
-    *   `update(String id, T item)`: Update an existing resource.
-    *   `delete(String id)`: Delete a resource by ID.
+    *   `create({required String userId, required T item})`: Create a new resource for a specific user.
+    *   `read({required String userId, required String id})`: Read a single resource by ID for a specific user.
+    *   `readAll({required String userId, String? startAfterId, int? limit})`: Read all resources for a specific user with optional pagination.
+    *   `readAllByQuery(Map<String, dynamic> query, {required String userId, String? startAfterId, int? limit})`: Read multiple resources based on a query for a specific user with optional pagination.
+    *   `update({required String userId, required String id, required T item})`: Update an existing resource by ID for a specific user.
+    *   `delete({required String userId, required String id})`: Delete a resource by ID for a specific user.
 *   **Pagination Support:** Includes parameters for `startAfterId` and `limit` in methods returning multiple items.
 *   **Querying Capability:** Provides a method to fetch data based on structured query parameters.
 *   **Type Safety:** Uses generics (`<T>`) to work with any data model.
@@ -133,9 +133,10 @@ class MyDataApiClient implements HtDataClient<MyDataModel> {
 
 // --- Usage in your application/repository ---
 // final myApiClient = MyDataApiClient(httpClient: yourHtHttpClientInstance);
-// final newItem = await myApiClient.create(MyDataModel(id: '', name: 'New Item'));
-// final item = await myApiClient.read('some-id');
-// final allItems = await myApiClient.readAll();
+// final userId = 'user123'; // Replace with actual user ID
+// final newItem = await myApiClient.create(userId: userId, item: MyDataModel(id: '', name: 'New Item'));
+// final item = await myApiClient.read(userId: userId, id: 'some-id');
+// final allItems = await myApiClient.readAll(userId: userId);
 ```
 
 ## License
