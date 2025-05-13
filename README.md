@@ -6,9 +6,22 @@
 
 ## Description
 
-This package defines a generic, abstract interface (`HtDataClient<T>`) for interacting with data resources of type `T`. While its core focus is on providing a standardized contract for common data access patterns, including standard CRUD (Create, Read, Update, Delete) operations, the interface is designed to be extensible to support additional resource-specific methods. It establishes a contract for data clients, expecting implementations to handle underlying communication (like HTTP) and manage serialization/deserialization.
+This package defines a generic, abstract interface (`HtDataClient<T>`) for
+interacting with data resources of type `T`. It is designed to handle
+operations for *both* user-scoped resources (where data is specific to a user)
+and global resources (where data is not tied to a specific user, e.g.,
+admin-managed content). The optional `userId` parameter in methods is used to
+differentiate between these two use cases.
 
-This package is designed to be implemented by concrete client classes that interact with specific data sources or APIs.
+While its core focus is on providing a standardized contract for common data
+access patterns, including standard CRUD (Create, Read, Update, Delete)
+operations, the interface is designed to be extensible to support additional
+resource-specific methods. It establishes a contract for data clients,
+expecting implementations to handle underlying communication (like HTTP) and
+manage serialization/deserialization.
+
+This package is designed to be implemented by concrete client classes that
+interact with specific data sources or APIs.
 
 ## Getting Started
 
@@ -29,116 +42,186 @@ import 'package:ht_data_client/ht_data_client.dart';
 
 ## Features
 
-*   **Generic Data Client Interface:** Defines standard methods for common data access patterns, including:
-    *   `create({required String userId, required T item})`: Create a new resource for a specific user.
-    *   `read({required String userId, required String id})`: Read a single resource by ID for a specific user.
-    *   `readAll({required String userId, String? startAfterId, int? limit})`: Read all resources for a specific user with optional pagination.
-    *   `readAllByQuery(Map<String, dynamic> query, {required String userId, String? startAfterId, int? limit})`: Read multiple resources based on a query for a specific user with optional pagination.
-    *   `update({required String userId, required String id, required T item})`: Update an existing resource by ID for a specific user.
-    *   `delete({required String userId, required String id})`: Delete a resource by ID for a specific user.
-*   **Pagination Support:** Includes parameters for `startAfterId` and `limit` in methods returning multiple items.
-*   **Querying Capability:** Provides a method to fetch data based on structured query parameters.
+*   **Generic Data Client Interface:** Defines standard methods for common data
+    access patterns. Methods include an optional `userId` parameter to
+    distinguish between user-scoped and global resource operations:
+    *   `create({String? userId, required T item})`: Create a new resource.
+        If `userId` is null, may represent a global creation.
+    *   `read({String? userId, required String id})`: Read a single resource
+         by ID. If `userId` is null, reads a global resource.
+    *   `readAll({String? userId, String? startAfterId, int? limit})`: Read
+        all resources. If `userId` is null, reads all global resources.
+    *   `readAllByQuery(Map<String, dynamic> query, {String? userId, String? startAfterId, int? limit})`:
+        Read multiple resources based on a query. If `userId` is null, queries
+        global resources.
+    *   `update({String? userId, required String id, required T item})`:
+        Update an existing resource by ID. If `userId` is null, updates a
+        global resource.
+    *   `delete({String? userId, required String id})`: Delete a resource by
+        ID. If `userId` is null, deletes a global resource.
+*   **Support for User-Scoped and Global Data:** The optional `userId`
+    parameter allows a single client implementation to handle data specific
+    to a user or data that is globally accessible.
+*   **Pagination Support:** Includes parameters for `startAfterId` and `limit`
+    in methods returning multiple items.
+*   **Querying Capability:** Provides a method to fetch data based on
+    structured query parameters.
 *   **Type Safety:** Uses generics (`<T>`) to work with any data model.
-*   **Serialization Agnostic:** Defines `FromJson<T>` and `ToJson<T>` typedefs, allowing implementations to use their preferred serialization logic.
-*   **Standardized Error Handling:** Specifies expected `HtHttpException` subtypes (from `package:ht_http_client`) that implementations should throw on failure.
+*   **Serialization Agnostic:** Defines `FromJson<T>` and `ToJson<T>` typedefs,
+    allowing implementations to use their preferred serialization logic.
+*   **Standardized Error Handling:** Specifies expected `HtHttpException`
+    subtypes (from `package:ht_shared`) that implementations should throw on
+    failure.
 
 ## Usage
 
-Since `HtDataClient<T>` is an abstract class, you need to create a concrete implementation for your specific resource type and data source (e.g., an HTTP API). This implementation will provide the logic for the CRUD, querying, and pagination methods defined by the interface.
+Since `HtDataClient<T>` is an abstract class, you need to create a concrete
+implementation for your specific resource type and data source (e.g., an HTTP
+API). This implementation will provide the logic for the CRUD, querying, and
+pagination methods defined by the interface, handling the optional `userId`.
 
 **Conceptual Implementation Example:**
 
 ```dart
 import 'package:ht_data_client/ht_data_client.dart';
-import 'package:ht_http_client/ht_http_client.dart'; // For HtHttpClient and exceptions
+import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 
-// Define your data model
-class MyDataModel {
-  final String id;
-  final String name;
+// Define your data model (assuming it's in ht_shared or similar)
+// class MyDataModel { ... }
 
-  MyDataModel({required this.id, required this.name});
+// Concrete implementation using HtHttpClient (assuming it exists)
+// import 'package:ht_http_client/ht_http_client.dart';
 
-  // Factory constructor for deserialization
-  factory MyDataModel.fromJson(Map<String, dynamic> json) {
-    return MyDataModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-    );
-  }
+// class MyDataApiClient implements HtDataClient<MyDataModel> {
+//   MyDataApiClient({required HtHttpClient httpClient})
+//       : _httpClient = httpClient;
 
-  // Method for serialization
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
-}
+//   final HtHttpClient _httpClient;
+//   final String _endpoint = '/mydata'; // Base API endpoint for the resource
 
-// Concrete implementation using HtHttpClient
-class MyDataApiClient implements HtDataClient<MyDataModel> {
-  MyDataApiClient({required HtHttpClient httpClient})
-      : _httpClient = httpClient;
+//   // Provide the FromJson function for MyDataModel
+//   static MyDataModel _fromJson(Object? json) =>
+//       MyDataModel.fromJson(json as Map<String, dynamic>);
 
-  final HtHttpClient _httpClient;
-  final String _endpoint = '/mydata'; // Base API endpoint for the resource
+//   // Provide the ToJson function for MyDataModel
+//   static Map<String, dynamic> _toJson(MyDataModel item) => item.toJson();
 
-  // Provide the FromJson function for MyDataModel
-  static MyDataModel _fromJson(Map<String, dynamic> json) =>
-      MyDataModel.fromJson(json);
+//   // Helper to build path, potentially including userId
+//   String _buildPath(String? userId, {String? id}) {
+//     if (userId != null) {
+//       return '/users/$userId$_endpoint${id != null ? '/$id' : ''}';
+//     }
+//     // Handle global endpoint if userId is null
+//     return '$_endpoint${id != null ? '/$id' : ''}';
+//   }
 
-  // Provide the ToJson function for MyDataModel
-  static Map<String, dynamic> _toJson(MyDataModel item) => item.toJson();
+//   @override
+//   Future<SuccessApiResponse<MyDataModel>> create({
+//     String? userId,
+//     required MyDataModel item,
+//   }) async {
+//     final path = _buildPath(userId);
+//     final response = await _httpClient.post<Map<String, dynamic>>(
+//       path,
+//       data: _toJson(item),
+//     );
+//     return SuccessApiResponse.fromJson(response, _fromJson);
+//   }
 
-  @override
-  Future<MyDataModel> create(MyDataModel item) async {
-    final response = await _httpClient.post(
-      _endpoint,
-      body: _toJson(item),
-    );
-    // Assuming the API returns the created item in the body
-    return _httpClient.parseResponse(response, _fromJson);
-  }
+//   @override
+//   Future<SuccessApiResponse<MyDataModel>> read({
+//     String? userId,
+//     required String id,
+//   }) async {
+//     final path = _buildPath(userId, id: id);
+//     final response = await _httpClient.get<Map<String, dynamic>>(path);
+//     return SuccessApiResponse.fromJson(response, _fromJson);
+//   }
 
-  @override
-  Future<MyDataModel> read(String id) async {
-    final response = await _httpClient.get('$_endpoint/$id');
-    return _httpClient.parseResponse(response, _fromJson);
-  }
+//   @override
+//   Future<SuccessApiResponse<PaginatedResponse<MyDataModel>>> readAll({
+//     String? userId,
+//     String? startAfterId,
+//     int? limit,
+//   }) async {
+//     final path = _buildPath(userId);
+//     final queryParameters = <String, dynamic>{
+//       if (startAfterId != null) 'startAfterId': startAfterId,
+//       if (limit != null) 'limit': limit,
+//     };
+//     final response = await _httpClient.get<Map<String, dynamic>>(
+//       path,
+//       queryParameters: queryParameters,
+//     );
+//     return SuccessApiResponse.fromJson(
+//       response,
+//       (json) => PaginatedResponse.fromJson(json as Map<String, dynamic>, _fromJson),
+//     );
+//   }
 
-  @override
-  Future<List<MyDataModel>> readAll() async {
-    final response = await _httpClient.get(_endpoint);
-    // Assuming the API returns a list of items
-    return _httpClient.parseResponseAsList(response, _fromJson);
-  }
+//   @override
+//   Future<SuccessApiResponse<PaginatedResponse<MyDataModel>>> readAllByQuery(
+//     Map<String, dynamic> query, {
+//     String? userId,
+//     String? startAfterId,
+//     int? limit,
+//   }) async {
+//     final path = _buildPath(userId);
+//     final queryParameters = <String, dynamic>{
+//       ...query,
+//       if (startAfterId != null) 'startAfterId': startAfterId,
+//       if (limit != null) 'limit': limit,
+//     };
+//     final response = await _httpClient.get<Map<String, dynamic>>(
+//       path,
+//       queryParameters: queryParameters,
+//     );
+//     return SuccessApiResponse.fromJson(
+//       response,
+//       (json) => PaginatedResponse.fromJson(json as Map<String, dynamic>, _fromJson),
+//     );
+//   }
 
-  @override
-  Future<MyDataModel> update(String id, MyDataModel item) async {
-    final response = await _httpClient.put(
-      '$_endpoint/$id',
-      body: _toJson(item),
-    );
-    // Assuming the API returns the updated item
-    return _httpClient.parseResponse(response, _fromJson);
-  }
+//   @override
+//   Future<SuccessApiResponse<MyDataModel>> update({
+//     String? userId,
+//     required String id,
+//     required MyDataModel item,
+//   }) async {
+//     final path = _buildPath(userId, id: id);
+//     final response = await _httpClient.put<Map<String, dynamic>>(
+//       path,
+//       data: _toJson(item),
+//     );
+//     return SuccessApiResponse.fromJson(response, _fromJson);
+//   }
 
-  @override
-  Future<void> delete(String id) async {
-    await _httpClient.delete('$_endpoint/$id');
-    // No return value needed, exceptions handled by HtHttpClient
-  }
-}
+//   @override
+//   Future<void> delete({String? userId, required String id}) async {
+//     final path = _buildPath(userId, id: id);
+//     await _httpClient.delete<void>(path);
+//   }
+// }
 
 // --- Usage in your application/repository ---
+// Assuming you have an instance of MyDataApiClient:
 // final myApiClient = MyDataApiClient(httpClient: yourHtHttpClientInstance);
+
+// // Example: Accessing user-scoped data
 // final userId = 'user123'; // Replace with actual user ID
-// final newItem = await myApiClient.create(userId: userId, item: MyDataModel(id: '', name: 'New Item'));
-// final item = await myApiClient.read(userId: userId, id: 'some-id');
-// final allItems = await myApiClient.readAll(userId: userId);
+// final userItem = await myApiClient.read(userId: userId, id: 'some-user-item-id');
+// final userItems = await myApiClient.readAll(userId: userId);
+
+// // Example: Accessing global data (e.g., Headlines)
+// // Assuming T is Headline for this client instance
+// final globalHeadlines = await myApiClient.readAll(userId: null);
+// final queriedHeadlines = await myApiClient.readAllByQuery(
+//   {'category': 'technology'},
+//   userId: null,
+// );
 ```
 
 ## License
 
-This package is licensed under the [PolyForm Free Trial](LICENSE). Please review the terms before use.
+This package is licensed under the [PolyForm Free Trial](LICENSE). Please
+review the terms before use.
