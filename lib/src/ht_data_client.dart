@@ -49,10 +49,7 @@ abstract class HtDataClient<T> {
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw other exceptions during serialization.
-  Future<SuccessApiResponse<T>> create({
-    required T item,
-    String? userId,
-  });
+  Future<SuccessApiResponse<T>> create({required T item, String? userId});
 
   /// Reads a single resource item of type [T] by its unique [id].
   ///
@@ -74,10 +71,7 @@ abstract class HtDataClient<T> {
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   /// Can also throw other exceptions during deserialization.
-  Future<SuccessApiResponse<T>> read({
-    required String id,
-    String? userId,
-  });
+  Future<SuccessApiResponse<T>> read({required String id, String? userId});
 
   /// Reads all resource items of type [T].
   ///
@@ -206,8 +200,5 @@ abstract class HtDataClient<T> {
   /// - [ServerException] for general server-side errors (5xx).
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
-  Future<void> delete({
-    required String id,
-    String? userId,
-  });
+  Future<void> delete({required String id, String? userId});
 }
