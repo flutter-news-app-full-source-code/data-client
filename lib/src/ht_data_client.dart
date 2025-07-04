@@ -81,6 +81,8 @@ abstract class HtDataClient<T> {
   ///   Implementations must handle the `null` case.
   /// - [startAfterId]: Optional ID to start pagination after.
   /// - [limit]: Optional maximum number of items to return.
+  /// - [sortBy]: Optional field name to sort the results by.
+  /// - [sortOrder]: Optional direction for sorting (`asc` or `desc`).
   ///
   /// Implementations should handle retrieving the complete collection of items
   /// (typically via GET `endpoint`), scoped by the provided [userId] or globally.
@@ -101,6 +103,8 @@ abstract class HtDataClient<T> {
     String? userId,
     String? startAfterId,
     int? limit,
+    String? sortBy,
+    SortOrder? sortOrder,
   });
 
   /// Reads multiple resource items of type [T] based on a [query].
@@ -112,6 +116,8 @@ abstract class HtDataClient<T> {
   /// - [query]: Map of query parameters to filter results.
   /// - [startAfterId]: Optional ID to start pagination after.
   /// - [limit]: Optional maximum number of items to return.
+  /// - [sortBy]: Optional field name to sort the results by.
+  /// - [sortOrder]: Optional direction for sorting (`asc` or `desc`).
   ///
   /// Implementations should handle retrieving data based on the provided
   /// [query] parameters (typically via GET `endpoint` with query parameters),
@@ -146,6 +152,8 @@ abstract class HtDataClient<T> {
     String? userId,
     String? startAfterId,
     int? limit,
+    String? sortBy,
+    SortOrder? sortOrder,
   });
 
   /// Updates an existing resource item of type [T] identified by [id].
