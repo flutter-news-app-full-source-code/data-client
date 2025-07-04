@@ -49,9 +49,9 @@ import 'package:ht_data_client/ht_data_client.dart';
         If `userId` is null, may represent a global creation.
     *   `read({String? userId, required String id})`: Read a single resource
          by ID. If `userId` is null, reads a global resource.
-    *   `readAll({String? userId, String? startAfterId, int? limit})`: Read
+    *   `readAll({String? userId, String? startAfterId, int? limit, String? sortBy, SortOrder? sortOrder})`: Read
         all resources. If `userId` is null, reads all global resources.
-    *   `readAllByQuery(Map<String, dynamic> query, {String? userId, String? startAfterId, int? limit})`:
+    *   `readAllByQuery(Map<String, dynamic> query, {String? userId, String? startAfterId, int? limit, String? sortBy, SortOrder? sortOrder})`:
         Read multiple resources based on a query. If `userId` is null, queries
         global resources.
     *   `update({String? userId, required String id, required T item})`:
@@ -62,7 +62,7 @@ import 'package:ht_data_client/ht_data_client.dart';
 *   **Support for User-Scoped and Global Data:** The optional `userId`
     parameter allows a single client implementation to handle data specific
     to a user or data that is globally accessible.
-*   **Pagination Support:** Includes parameters for `startAfterId` and `limit`
+*   **Pagination and Sorting Support:** Includes parameters for `startAfterId`, `limit`, `sortBy`, and `sortOrder`
     in methods returning multiple items.
 *   **Querying Capability:** Provides a method to fetch data based on
     structured query parameters.
@@ -143,11 +143,15 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //     String? userId,
 //     String? startAfterId,
 //     int? limit,
+//     String? sortBy,
+//     SortOrder? sortOrder,
 //   }) async {
 //     final path = _buildPath(userId);
 //     final queryParameters = <String, dynamic>{
 //       if (startAfterId != null) 'startAfterId': startAfterId,
 //       if (limit != null) 'limit': limit,
+//       if (sortBy != null) 'sortBy': sortBy,
+//       if (sortOrder != null) 'sortOrder': sortOrder.name,
 //     };
 //     final response = await _httpClient.get<Map<String, dynamic>>(
 //       path,
@@ -165,12 +169,16 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //     String? userId,
 //     String? startAfterId,
 //     int? limit,
+//     String? sortBy,
+//     SortOrder? sortOrder,
 //   }) async {
 //     final path = _buildPath(userId);
 //     final queryParameters = <String, dynamic>{
 //       ...query,
 //       if (startAfterId != null) 'startAfterId': startAfterId,
 //       if (limit != null) 'limit': limit,
+//       if (sortBy != null) 'sortBy': sortBy,
+//       if (sortOrder != null) 'sortOrder': sortOrder.name,
 //     };
 //     final response = await _httpClient.get<Map<String, dynamic>>(
 //       path,
