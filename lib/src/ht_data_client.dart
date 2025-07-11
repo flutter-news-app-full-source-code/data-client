@@ -6,36 +6,6 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 /// A function that converts an object of type [T> to a JSON map.
 typedef ToJson<T> = Map<String, dynamic> Function(T item);
 
-/// {@template sort_option}
-/// Represents a single sorting criterion for a query, consisting of a field
-/// name and a sort order.
-/// {@endtemplate}
-class SortOption {
-  /// {@macro sort_option}
-  const SortOption(this.field, [this.order = SortOrder.asc]);
-
-  /// The field to sort by.
-  final String field;
-
-  /// The order to sort in.
-  final SortOrder order;
-}
-
-/// {@template pagination_options}
-/// Represents pagination parameters for a query.
-/// {@endtemplate}
-class PaginationOptions {
-  /// {@macro pagination_options}
-  const PaginationOptions({this.cursor, this.limit});
-
-  /// An opaque string used for pagination. This should be the `nextCursor`
-  /// value from a previous `PaginatedResponse`.
-  final String? cursor;
-
-  /// The maximum number of items to return.
-  final int? limit;
-}
-
 /// {@template ht_data_client}
 /// Defines a generic interface for clients interacting with data resources
 /// of type [T].
