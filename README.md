@@ -49,7 +49,7 @@ import 'package:ht_data_client/ht_data_client.dart';
         If `userId` is null, may represent a global creation.
     *   `read({String? userId, required String id})`: Read a single resource
         by ID. If `userId` is null, reads a global resource.
-    *   `readAll({String? userId, Map<String, dynamic>? filter, String? cursor, int? limit, List<SortOption>? sort})`:
+    *   `readAll({String? userId, Map<String, dynamic>? filter, PaginationOptions? pagination, List<SortOption>? sort})`:
         Reads multiple resources with powerful filtering, sorting, and pagination.
     *   `update({String? userId, required String id, required T item})`:
         Update an existing resource by ID. If `userId` is null, updates a
@@ -59,8 +59,8 @@ import 'package:ht_data_client/ht_data_client.dart';
 *   **Support for User-Scoped and Global Data:** The optional `userId`
     parameter allows a single client implementation to handle data specific
     to a user or data that is globally accessible.
-*   **Advanced Pagination and Sorting:** Supports robust, cursor-based
-    pagination (`cursor`) and multi-field sorting (`List<SortOption>`),
+*   **Advanced Pagination and Sorting:** Supports robust, cursor-based pagination
+    (via `PaginationOptions`) and multi-field sorting (`List<SortOption>`),
     ideal for document databases.
 *   **Rich Querying Capability:** The `readAll` method accepts a `filter` map
     that can be used to construct complex, MongoDB-style queries.
@@ -141,8 +141,7 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //   Future<SuccessApiResponse<PaginatedResponse<MyDataModel>>> readAll({
 //     String? userId,
 //     Map<String, dynamic>? filter,
-//     String? cursor,
-//     int? limit,
+//     PaginationOptions? pagination,
 //     List<SortOption>? sort,
 //   }) async {
 //     final path = _buildPath(userId);
@@ -150,8 +149,8 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //       // The backend API would need to know how to interpret these.
 //       // 'filter' might be JSON-encoded, and 'sort' could be a string.
 //       if (filter != null) 'filter': jsonEncode(filter),
-//       if (cursor != null) 'cursor': cursor,
-//       if (limit != null) 'limit': limit,
+//       if (pagination?.cursor != null) 'cursor': pagination!.cursor,
+//       if (pagination?.limit != null) 'limit': pagination!.limit,
 //       if (sort != null)
 //         'sort': sort.map((s) => '${s.field}:${s.order.name}').join(','),
 //     };
@@ -204,7 +203,7 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //   sort: [
 //     SortOption('publishDate', SortOrder.desc),
 //   ],
-//   limit: 10,
+//   pagination: PaginationOptions(limit: 10),
 // );
 ```
 

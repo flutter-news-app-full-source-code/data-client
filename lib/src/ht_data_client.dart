@@ -21,6 +21,21 @@ class SortOption {
   final SortOrder order;
 }
 
+/// {@template pagination_options}
+/// Represents pagination parameters for a query.
+/// {@endtemplate}
+class PaginationOptions {
+  /// {@macro pagination_options}
+  const PaginationOptions({this.cursor, this.limit});
+
+  /// An opaque string used for pagination. This should be the `nextCursor`
+  /// value from a previous `PaginatedResponse`.
+  final String? cursor;
+
+  /// The maximum number of items to return.
+  final int? limit;
+}
+
 /// {@template ht_data_client}
 /// Defines a generic interface for clients interacting with data resources
 /// of type [T].
@@ -100,9 +115,7 @@ abstract class HtDataClient<T> {
   /// - [filter]: An optional map defining the query conditions. It is designed
   ///   to be compatible with MongoDB's query syntax. If `null` or empty, all
   ///   resources (scoped by `userId`) are returned.
-  /// - [cursor]: An optional opaque string used for pagination. This should be
-  ///   the `nextCursor` value from a previous `PaginatedResponse`.
-  /// - [limit]: Optional maximum number of items to return.
+  /// - [pagination]: Optional pagination parameters, including `cursor` and `limit`.
   /// - [sort]: An optional list of [SortOption] to define the sorting order.
   ///   MongoDB supports sorting by multiple fields.
   ///
@@ -136,8 +149,7 @@ abstract class HtDataClient<T> {
   Future<SuccessApiResponse<PaginatedResponse<T>>> readAll({
     String? userId,
     Map<String, dynamic>? filter,
-    String? cursor,
-    int? limit,
+    PaginationOptions? pagination,
     List<SortOption>? sort,
   });
 
