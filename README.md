@@ -48,12 +48,9 @@ import 'package:ht_data_client/ht_data_client.dart';
     *   `create({String? userId, required T item})`: Create a new resource.
         If `userId` is null, may represent a global creation.
     *   `read({String? userId, required String id})`: Read a single resource
-         by ID. If `userId` is null, reads a global resource.
-    *   `readAll({String? userId, String? startAfterId, int? limit, String? sortBy, SortOrder? sortOrder})`: Read
-        all resources. If `userId` is null, reads all global resources.
-    *   `readAllByQuery(Map<String, dynamic> query, {String? userId, String? startAfterId, int? limit, String? sortBy, SortOrder? sortOrder})`:
-        Read multiple resources based on a query. If `userId` is null, queries
-        global resources.
+        by ID. If `userId` is null, reads a global resource.
+    *   `readAll({String? userId, Map<String, dynamic>? filter, String? cursor, int? limit, List<SortOption>? sort})`:
+        Reads multiple resources with powerful filtering, sorting, and pagination.
     *   `update({String? userId, required String id, required T item})`:
         Update an existing resource by ID. If `userId` is null, updates a
         global resource.
@@ -62,10 +59,11 @@ import 'package:ht_data_client/ht_data_client.dart';
 *   **Support for User-Scoped and Global Data:** The optional `userId`
     parameter allows a single client implementation to handle data specific
     to a user or data that is globally accessible.
-*   **Pagination and Sorting Support:** Includes parameters for `startAfterId`, `limit`, `sortBy`, and `sortOrder`
-    in methods returning multiple items.
-*   **Querying Capability:** Provides a method to fetch data based on
-    structured query parameters.
+*   **Advanced Pagination and Sorting:** Supports robust, cursor-based
+    pagination (`cursor`) and multi-field sorting (`List<SortOption>`),
+    ideal for document databases.
+*   **Rich Querying Capability:** The `readAll` method accepts a `filter` map
+    that can be used to construct complex, MongoDB-style queries.
 *   **Type Safety:** Uses generics (`<T>`) to work with any data model.
 *   **Serialization Agnostic:** Defines `FromJson<T>` and `ToJson<T>` typedefs,
     allowing implementations to use their preferred serialization logic.
@@ -83,6 +81,7 @@ pagination methods defined by the interface, handling the optional `userId`.
 **Conceptual Implementation Example:**
 
 ```dart
+import 'dart:convert'; // For jsonEncode
 import 'package:ht_data_client/ht_data_client.dart';
 import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 
@@ -141,52 +140,30 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //   @override
 //   Future<SuccessApiResponse<PaginatedResponse<MyDataModel>>> readAll({
 //     String? userId,
-//     String? startAfterId,
+//     Map<String, dynamic>? filter,
+//     String? cursor,
 //     int? limit,
-//     String? sortBy,
-//     SortOrder? sortOrder,
+//     List<SortOption>? sort,
 //   }) async {
 //     final path = _buildPath(userId);
 //     final queryParameters = <String, dynamic>{
-//       if (startAfterId != null) 'startAfterId': startAfterId,
+//       // The backend API would need to know how to interpret these.
+//       // 'filter' might be JSON-encoded, and 'sort' could be a string.
+//       if (filter != null) 'filter': jsonEncode(filter),
+//       if (cursor != null) 'cursor': cursor,
 //       if (limit != null) 'limit': limit,
-//       if (sortBy != null) 'sortBy': sortBy,
-//       if (sortOrder != null) 'sortOrder': sortOrder.name,
+//       if (sort != null)
+//         'sort': sort.map((s) => '${s.field}:${s.order.name}').join(','),
 //     };
 //     final response = await _httpClient.get<Map<String, dynamic>>(
 //       path,
 //       queryParameters: queryParameters,
 //     );
 //     return SuccessApiResponse.fromJson(
-//       response,
-//       (json) => PaginatedResponse.fromJson(json as Map<String, dynamic>, _fromJson),
-//     );
-//   }
-
-//   @override
-//   Future<SuccessApiResponse<PaginatedResponse<MyDataModel>>> readAllByQuery(
-//     Map<String, dynamic> query, {
-//     String? userId,
-//     String? startAfterId,
-//     int? limit,
-//     String? sortBy,
-//     SortOrder? sortOrder,
-//   }) async {
-//     final path = _buildPath(userId);
-//     final queryParameters = <String, dynamic>{
-//       ...query,
-//       if (startAfterId != null) 'startAfterId': startAfterId,
-//       if (limit != null) 'limit': limit,
-//       if (sortBy != null) 'sortBy': sortBy,
-//       if (sortOrder != null) 'sortOrder': sortOrder.name,
-//     };
-//     final response = await _httpClient.get<Map<String, dynamic>>(
-//       path,
-//       queryParameters: queryParameters,
-//     );
-//     return SuccessApiResponse.fromJson(
-//       response,
-//       (json) => PaginatedResponse.fromJson(json as Map<String, dynamic>, _fromJson),
+//       response, (json) => PaginatedResponse.fromJson(
+//         json as Map<String, dynamic>,
+//         _fromJson,
+//       ),
 //     );
 //   }
 
@@ -218,14 +195,16 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 // // Example: Accessing user-scoped data
 // final userId = 'user123'; // Replace with actual user ID
 // final userItem = await myApiClient.read(userId: userId, id: 'some-user-item-id');
-// final userItems = await myApiClient.readAll(userId: userId);
+// final allUserItems = await myApiClient.readAll(userId: userId);
 
-// // Example: Accessing global data (e.g., Headlines)
-// // Assuming T is Headline for this client instance
-// final globalHeadlines = await myApiClient.readAll(userId: null);
-// final queriedHeadlines = await myApiClient.readAllByQuery(
-//   {'category': 'technology'},
-//   userId: null,
+// // Example: Accessing global data with filtering and sorting
+// final queriedItems = await myApiClient.readAll(
+//   userId: null, // Global query
+//   filter: {'category': 'technology', 'status': 'published'},
+//   sort: [
+//     SortOption('publishDate', SortOrder.desc),
+//   ],
+//   limit: 10,
 // );
 ```
 
