@@ -6,6 +6,21 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 /// A function that converts an object of type [T> to a JSON map.
 typedef ToJson<T> = Map<String, dynamic> Function(T item);
 
+/// {@template sort_option}
+/// Represents a single sorting criterion for a query, consisting of a field
+/// name and a sort order.
+/// {@endtemplate}
+class SortOption {
+  /// {@macro sort_option}
+  const SortOption(this.field, [this.order = SortOrder.asc]);
+
+  /// The field to sort by.
+  final String field;
+
+  /// The order to sort in.
+  final SortOrder order;
+}
+
 /// {@template ht_data_client}
 /// Defines a generic interface for clients interacting with data resources
 /// of type [T].
@@ -73,87 +88,57 @@ abstract class HtDataClient<T> {
   /// Can also throw other exceptions during deserialization.
   Future<SuccessApiResponse<T>> read({required String id, String? userId});
 
-  /// Reads all resource items of type [T].
+  /// Reads multiple resource items of type [T], with support for rich filtering,
+  /// sorting, and pagination.
   ///
-  /// - [userId]: The unique identifier of the user performing the operation.
-  ///   If `null`, the operation should retrieve all *global* resources of type [T].
-  ///   If provided, the operation should retrieve all resources scoped to that user.
-  ///   Implementations must handle the `null` case.
-  /// - [startAfterId]: Optional ID to start pagination after.
+  /// This method provides a flexible and powerful query interface suitable for
+  /// document databases like MongoDB, consolidating previous `readAll` and
+  /// `readAllByQuery` functionalities.
+  ///
+  /// - [userId]: The unique identifier of the user. If `null`, retrieves
+  ///   *global* resources. If provided, retrieves resources scoped to that user.
+  /// - [filter]: An optional map defining the query conditions. It is designed
+  ///   to be compatible with MongoDB's query syntax. If `null` or empty, all
+  ///   resources (scoped by `userId`) are returned.
+  /// - [cursor]: An optional opaque string used for pagination. This should be
+  ///   the `nextCursor` value from a previous `PaginatedResponse`.
   /// - [limit]: Optional maximum number of items to return.
-  /// - [sortBy]: Optional field name to sort the results by.
-  /// - [sortOrder]: Optional direction for sorting (`asc` or `desc`).
+  /// - [sort]: An optional list of [SortOption] to define the sorting order.
+  ///   MongoDB supports sorting by multiple fields.
   ///
-  /// Implementations should handle retrieving the complete collection of items
-  /// (typically via GET `endpoint`), scoped by the provided [userId] or globally.
   /// Returns a [SuccessApiResponse] containing a [PaginatedResponse] with the
-  /// list of deserialized items.
+  /// list of deserialized items and a `nextCursor` for the next page.
   ///
-  /// Supports pagination using the [startAfterId] and [limit] parameters.
-  ///
-  /// Throws [HtHttpException] or its subtypes on failure:
-  /// - [UnauthorizedException] if authentication is required and missing/invalid.
-  /// - [ForbiddenException] if the authenticated user lacks permission.
-  /// - [ServerException] for general server-side errors (5xx).
-  /// - [NetworkException] for connectivity issues.
-  /// - [UnknownException] for other unexpected errors during the HTTP call.
-  /// Can also throw [FormatException] if the received data (e.g., list items)
-  /// is malformed during deserialization.
-  Future<SuccessApiResponse<PaginatedResponse<T>>> readAll({
-    String? userId,
-    String? startAfterId,
-    int? limit,
-    String? sortBy,
-    SortOrder? sortOrder,
-  });
-
-  /// Reads multiple resource items of type [T] based on a [query].
-  ///
-  /// - [userId]: The unique identifier of the user performing the operation.
-  ///   If `null`, the operation should retrieve *global* resources matching the
-  ///   query. If provided, the operation should retrieve resources scoped to
-  ///   that user matching the query. Implementations must handle the `null` case.
-  /// - [query]: Map of query parameters to filter results.
-  /// - [startAfterId]: Optional ID to start pagination after.
-  /// - [limit]: Optional maximum number of items to return.
-  /// - [sortBy]: Optional field name to sort the results by.
-  /// - [sortOrder]: Optional direction for sorting (`asc` or `desc`).
-  ///
-  /// Implementations should handle retrieving data based on the provided
-  /// [query] parameters (typically via GET `endpoint` with query parameters),
-  /// potentially scoped by the provided [userId] or globally.
-  /// Returns a [SuccessApiResponse] containing a [PaginatedResponse] with the
-  /// list of deserialized items matching the query.
-  ///
-  /// Supports pagination using the [startAfterId] and [limit] parameters.
-  ///
-  /// Example query map:
+  /// **Example Filter (MongoDB-style):**
   /// ```dart
   /// {
-  ///   'authorId': 'some-author-id',
-  ///   'category': 'technology',
-  ///   'sortBy': 'publishDate',
-  ///   'sortOrder': 'desc',
   ///   'status': 'published',
+  ///   'tags': { '\$in': ['tech', 'dart'] },
+  ///   'publishDate': { '\$gte': '2024-01-01T00:00:00.000Z' }
   /// }
   /// ```
   ///
+  /// **Example Sort:**
+  /// ```dart
+  /// [
+  ///   SortOption('publishDate', SortOrder.desc),
+  ///   SortOption('title', SortOrder.asc),
+  /// ]
+  /// ```
+  ///
   /// Throws [HtHttpException] or its subtypes on failure:
-  /// - [BadRequestException] for invalid query parameters.
+  /// - [BadRequestException] for invalid filter, sort, or pagination parameters.
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
   /// - [ForbiddenException] if the authenticated user lacks permission.
   /// - [ServerException] for general server-side errors (5xx).
   /// - [NetworkException] for connectivity issues.
-  /// - [UnknownException] for other unexpected errors during the HTTP call.
-  /// Can also throw [FormatException] if the received data (e.g., list items)
-  /// is malformed during deserialization.
-  Future<SuccessApiResponse<PaginatedResponse<T>>> readAllByQuery(
-    Map<String, dynamic> query, {
+  /// - [UnknownException] for other unexpected errors.
+  Future<SuccessApiResponse<PaginatedResponse<T>>> readAll({
     String? userId,
-    String? startAfterId,
+    Map<String, dynamic>? filter,
+    String? cursor,
     int? limit,
-    String? sortBy,
-    SortOrder? sortOrder,
+    List<SortOption>? sort,
   });
 
   /// Updates an existing resource item of type [T] identified by [id].
