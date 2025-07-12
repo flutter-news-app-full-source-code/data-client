@@ -176,4 +176,30 @@ abstract class HtDataClient<T> {
   /// - [NetworkException] for connectivity issues.
   /// - [UnknownException] for other unexpected errors during the HTTP call.
   Future<void> delete({required String id, String? userId});
+
+  /// Counts the number of resource items matching the given criteria.
+  ///
+  /// This method provides an efficient way to get the total number of documents
+  /// without fetching the documents themselves, which is ideal for UI elements
+  /// like badges or for backend analytics.
+  ///
+  /// - [userId]: The unique identifier of the user. If `null`, counts
+  ///   *global* resources. If provided, counts resources scoped to that user.
+  /// - [filter]: An optional map defining the query conditions, compatible with
+  ///   MongoDB's query syntax. If `null` or empty, all resources (scoped by
+  ///   `userId`) are counted.
+  ///
+  /// Returns a [SuccessApiResponse] containing the total count as an integer.
+  ///
+  /// Throws [HtHttpException] or its subtypes on failure:
+  /// - [BadRequestException] for invalid filter parameters.
+  /// - [UnauthorizedException] if authentication is required and missing/invalid.
+  /// - [ForbiddenException] if the authenticated user lacks permission.
+  /// - [ServerException] for general server-side errors (5xx).
+  /// - [NetworkException] for connectivity issues.
+  /// - [UnknownException] for other unexpected errors.
+  Future<SuccessApiResponse<int>> count({
+    String? userId,
+    Map<String, dynamic>? filter,
+  });
 }
