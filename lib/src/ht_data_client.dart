@@ -202,4 +202,41 @@ abstract class HtDataClient<T> {
     String? userId,
     Map<String, dynamic>? filter,
   });
+
+  /// Executes a complex aggregation pipeline on the data source.
+  ///
+  /// This is a powerful method that allows for advanced data processing,
+  /// grouping, and transformation directly on the database server, which is
+  /// highly efficient for analytics and reporting.
+  ///
+  /// - [userId]: The unique identifier of the user. If `null`, the pipeline
+  ///   runs on *global* resources. If provided, the pipeline should be scoped
+  ///   to that user's data (implementations should typically add a `$match`
+  ///   stage for the `userId` at the beginning of the pipeline).
+  /// - [pipeline]: A list of stages representing the MongoDB aggregation
+  ///   pipeline. Each stage is a map.
+  ///
+  /// Returns a [SuccessApiResponse] containing a list of documents (as maps)
+  /// that are the result of the aggregation pipeline.
+  ///
+  /// **Example Pipeline (get top 3 topics by headline count):**
+  /// ```dart
+  /// [
+  ///   { '\$group': { '_id': '\$topic.id', 'count': { '\$sum': 1 } } },
+  ///   { '\$sort': { 'count': -1 } },
+  ///   { '\$limit': 3 }
+  /// ]
+  /// ```
+  ///
+  /// Throws [HtHttpException] or its subtypes on failure:
+  /// - [BadRequestException] for an invalid pipeline structure.
+  /// - [UnauthorizedException] if authentication is required and missing/invalid.
+  /// - [ForbiddenException] if the authenticated user lacks permission.
+  /// - [ServerException] for general server-side errors (5xx).
+  /// - [NetworkException] for connectivity issues.
+  /// - [UnknownException] for other unexpected errors.
+  Future<SuccessApiResponse<List<Map<String, dynamic>>>> aggregate({
+    required List<Map<String, dynamic>> pipeline,
+    String? userId,
+  });
 }
