@@ -56,6 +56,11 @@ import 'package:ht_data_client/ht_data_client.dart';
         global resource.
     *   `delete({String? userId, required String id})`: Delete a resource by
         ID. If `userId` is null, deletes a global resource.
+*   `count({String? userId, Map<String, dynamic>? filter})`: Efficiently
+    counts resources matching a filter without fetching them.
+*   `aggregate({String? userId, required List<Map<String, dynamic>> pipeline})`:
+    Executes a complex, server-side aggregation pipeline for analytics and
+    reporting.
 *   **Support for User-Scoped and Global Data:** The optional `userId`
     parameter allows a single client implementation to handle data specific
     to a user or data that is globally accessible.
@@ -185,6 +190,42 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //     final path = _buildPath(userId, id: id);
 //     await _httpClient.delete<void>(path);
 //   }
+
+//   @override
+//   Future<SuccessApiResponse<int>> count({
+//     String? userId,
+//     Map<String, dynamic>? filter,
+//   }) async {
+//     // This conceptual path assumes a dedicated endpoint for counting.
+//     final path = _buildPath(userId, pathSuffix: '/count');
+//     final queryParameters = <String, dynamic>{
+//       if (filter != null) 'filter': jsonEncode(filter),
+// }
+//     final response = await _httpClient.get<Map<String, dynamic>>(
+//       path,
+//       queryParameters: queryParameters,
+//     );
+//     // Assuming the API returns a SuccessApiResponse with an int data field.
+//     return SuccessApiResponse.fromJson(response, (json) => json as int);
+//   }
+
+//   @override
+//   Future<SuccessApiResponse<List<Map<String, dynamic>>>> aggregate({
+//     String? userId,
+//     required List<Map<String, dynamic>> pipeline,
+//   }) async {
+//     // This conceptual path assumes a dedicated endpoint for aggregation.
+//     final path = _buildPath(userId, pathSuffix: '/aggregate');
+//     final response = await _httpClient.post<Map<String, dynamic>>(
+//       path,
+//       data: {'pipeline': pipeline},
+//     );
+//     // Assuming the API returns a SuccessApiResponse with a list of maps.
+//     return SuccessApiResponse.fromJson(
+//       response,
+//       (json) => List<Map<String, dynamic>>.from(json as List),
+//     );
+//   }
 // }
 
 // --- Usage in your application/repository ---
@@ -205,6 +246,23 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 //   ],
 //   pagination: PaginationOptions(limit: 10),
 // );
+
+// // Example: Counting items
+// final countResponse = await myApiClient.count(
+//   userId: null,
+//   filter: {'status': 'published'},
+// );
+// print('Published items: ${countResponse.data}');
+
+// // Example: Running an aggregation pipeline
+// final topTopicsResponse = await myApiClient.aggregate(
+//   pipeline: [
+//     { '\$group': { '_id': '\$topic.id', 'count': { '\$sum': 1 } } },
+//     { '\$sort': { 'count': -1 } },
+//     { '\$limit': 3 }
+//   ],
+// );
+// print('Top topics: ${topTopicsResponse.data}');
 ```
 
 ## License
