@@ -6,7 +6,7 @@
 
 ## Description
 
-This package defines a generic, abstract interface (`HtDataClient<T>`) for
+This package defines a generic, abstract interface (`DataClient<T>`) for
 interacting with data resources of type `T`. It is designed to handle
 operations for *both* user-scoped resources (where data is specific to a user)
 and global resources (where data is not tied to a specific user, e.g.,
@@ -78,7 +78,7 @@ import 'package:data_client/data_client.dart';
 
 ## Usage
 
-Since `HtDataClient<T>` is an abstract class, you need to create a concrete
+Since `DataClient<T>` is an abstract class, you need to create a concrete
 implementation for your specific resource type and data source (e.g., an HTTP
 API). This implementation will provide the logic for the CRUD, querying, and
 pagination methods defined by the interface, handling the optional `userId`.
@@ -96,7 +96,7 @@ import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 // Concrete implementation using HtHttpClient (assuming it exists)
 // import 'package:ht_http_client/ht_http_client.dart';
 
-// class MyDataApiClient implements HtDataClient<MyDataModel> {
+// class MyDataApiClient implements DataClient<MyDataModel> {
 //   MyDataApiClient({required HtHttpClient httpClient})
 //       : _httpClient = httpClient;
 
