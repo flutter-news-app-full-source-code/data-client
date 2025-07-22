@@ -31,7 +31,7 @@ Add the package to your `pubspec.yaml`:
 dependencies:
   data_client:
     git:
-      url: https://github.com/flutter-full-news-app-source-code/data-client.git
+      url: https://github.com/flutter-news-app-full-source-code/data-client.git
 ```
 
 Then, import the package:
@@ -265,7 +265,8 @@ import 'package:core/core.dart'; // For HttpException and models
 // print('Top topics: ${topTopicsResponse.data}');
 ```
 
-## License
+## 🔑 Licensing
 
-This package is licensed under the [PolyForm Free Trial](LICENSE). Please
-review the terms before use.
+This package is source-available and licensed under the [PolyForm Free Trial 1.0.0](LICENSE). Please review the terms before use.
+
+For commercial licensing options that grant the right to build and distribute unlimited applications, please visit the main [**Flutter News App - Full Source Code Toolkit**](https://github.com/flutter-news-app-full-source-code) organization.
