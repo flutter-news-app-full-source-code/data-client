@@ -1,4 +1,4 @@
-# ht_data_client
+# data_client
 
 ![coverage: percentage](https://img.shields.io/badge/coverage-100-green)
 [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
@@ -29,7 +29,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ht_data_client:
+  data_client:
     git:
       url: https://github.com/headlines-toolkit/ht-data-client.git
 ```
@@ -37,7 +37,7 @@ dependencies:
 Then, import the package:
 
 ```dart
-import 'package:ht_data_client/ht_data_client.dart';
+import 'package:data_client/data_client.dart';
 ```
 
 ## Features
@@ -87,7 +87,7 @@ pagination methods defined by the interface, handling the optional `userId`.
 
 ```dart
 import 'dart:convert'; // For jsonEncode
-import 'package:ht_data_client/ht_data_client.dart';
+import 'package:data_client/data_client.dart';
 import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
 
 // Define your data model (assuming it's in ht_shared or similar)

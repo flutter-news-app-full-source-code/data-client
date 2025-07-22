@@ -6,7 +6,7 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 /// A function that converts an object of type [T> to a JSON map.
 typedef ToJson<T> = Map<String, dynamic> Function(T item);
 
-/// {@template ht_data_client}
+/// {@template data_client}
 /// Defines a generic interface for clients interacting with data resources
 /// of type [T].
 ///
@@ -27,7 +27,7 @@ typedef ToJson<T> = Map<String, dynamic> Function(T item);
 /// the operation to that user; if `null`, perform the operation on global
 /// resources (where applicable for the specific method).
 /// {@endtemplate}
-abstract class HtDataClient<T> {
+abstract class DataClient<T> {
   /// Creates a new resource item of type [T].
   ///
   /// - [userId]: The unique identifier of the user performing the operation.
