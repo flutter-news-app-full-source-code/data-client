@@ -1,4 +1,4 @@
-import 'package:ht_shared/ht_shared.dart';
+import 'package:core/core.dart';
 
 /// A function that converts a JSON map to an object of type [T].
 typedef FromJson<T> = T Function(Map<String, dynamic> json);
@@ -41,7 +41,7 @@ abstract class DataClient<T> {
   /// Returns a [SuccessApiResponse] containing the created item, potentially
   /// populated with server-assigned data (like an ID).
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [BadRequestException] for validation errors or malformed requests.
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
   /// - [ForbiddenException] if the authenticated user lacks permission.
@@ -62,7 +62,7 @@ abstract class DataClient<T> {
   /// (typically via GET `endpoint/{id}`), potentially scoped by the provided [userId].
   /// Returns a [SuccessApiResponse] containing the deserialized item.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [NotFoundException] if no item exists with the given [id] (scoped by user
   ///   if [userId] is provided, or globally if [userId] is `null`).
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
@@ -109,7 +109,7 @@ abstract class DataClient<T> {
   /// ]
   /// ```
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [BadRequestException] for invalid filter, sort, or pagination parameters.
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
   /// - [ForbiddenException] if the authenticated user lacks permission.
@@ -138,7 +138,7 @@ abstract class DataClient<T> {
   /// Returns a [SuccessApiResponse] containing the updated item as confirmed
   /// by the source.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [BadRequestException] for validation errors or malformed requests.
   /// - [NotFoundException] if no item exists with the given [id] (scoped by user
   ///   if [userId] is provided, or globally if [userId] is `null`).
@@ -167,7 +167,7 @@ abstract class DataClient<T> {
   /// by the provided [userId].
   /// Returns `void` upon successful deletion.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [NotFoundException] if no item exists with the given [id] (scoped by user
   ///   if [userId] is provided, or globally if [userId] is `null`).
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
@@ -191,7 +191,7 @@ abstract class DataClient<T> {
   ///
   /// Returns a [SuccessApiResponse] containing the total count as an integer.
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [BadRequestException] for invalid filter parameters.
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
   /// - [ForbiddenException] if the authenticated user lacks permission.
@@ -228,7 +228,7 @@ abstract class DataClient<T> {
   /// ]
   /// ```
   ///
-  /// Throws [HtHttpException] or its subtypes on failure:
+  /// Throws [HttpException] or its subtypes on failure:
   /// - [BadRequestException] for an invalid pipeline structure.
   /// - [UnauthorizedException] if authentication is required and missing/invalid.
   /// - [ForbiddenException] if the authenticated user lacks permission.

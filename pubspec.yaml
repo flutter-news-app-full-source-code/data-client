@@ -1,15 +1,15 @@
 name: data_client
 description: generic, abstract interface (DataClient<T>) for interacting with data resources of type T.
-repository: https://github.com/headlines-toolkit/ht-data-client
+repository: https://github.com/flutter-full-news-app-source-code/data-client
 publish_to: none
 
 environment:
   sdk: ^3.8.0
 
 dependencies:
-  ht_shared:
+  core:
     git:
-      url: https://github.com/headlines-toolkit/ht-shared.git
+      url: https://github.com/flutter-full-news-app-source-code/core.git
 
 dev_dependencies:
   mocktail: ^1.0.4

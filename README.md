@@ -31,7 +31,7 @@ Add the package to your `pubspec.yaml`:
 dependencies:
   data_client:
     git:
-      url: https://github.com/headlines-toolkit/ht-data-client.git
+      url: https://github.com/flutter-full-news-app-source-code/data-client.git
 ```
 
 Then, import the package:
@@ -72,8 +72,8 @@ import 'package:data_client/data_client.dart';
 *   **Type Safety:** Uses generics (`<T>`) to work with any data model.
 *   **Serialization Agnostic:** Defines `FromJson<T>` and `ToJson<T>` typedefs,
     allowing implementations to use their preferred serialization logic.
-*   **Standardized Error Handling:** Specifies expected `HtHttpException`
-    subtypes (from `package:ht_shared`) that implementations should throw on
+*   **Standardized Error Handling:** Specifies expected `HttpException`
+    subtypes (from `package:core`) that implementations should throw on
     failure.
 
 ## Usage
@@ -88,9 +88,9 @@ pagination methods defined by the interface, handling the optional `userId`.
 ```dart
 import 'dart:convert'; // For jsonEncode
 import 'package:data_client/data_client.dart';
-import 'package:ht_shared/ht_shared.dart'; // For HtHttpException and models
+import 'package:core/core.dart'; // For HttpException and models
 
-// Define your data model (assuming it's in ht_shared or similar)
+// Define your data model (assuming it's in core or similar)
 // class MyDataModel { ... }
 
 // Concrete implementation using HtHttpClient (assuming it exists)
