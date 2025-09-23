@@ -5,7 +5,9 @@
 </div>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/coverage-xx-green?style=for-the-badge" alt="coverage: xx%">
+  <img src="https://img.shields.io/badge/coverage-100%25-green?style=for-the-badge" alt="coverage: xx%">
+<a href="https://flutter-news-app-full-source-code.github.io/docs/"><img src="https://img.shields.io/badge/LIVE_DOCS-VIEW-slategray?style=for-the-badge" alt="Live Docs: View"></a>
+<a href="https://github.com/flutter-news-app-full-source-code"><img src="https://img.shields.io/badge/MAIN_PROJECT-BROWSE-purple?style=for-the-badge" alt="Main Project: Browse"></a>
 </p>
 
 This `data_client` package serves as a foundational shared library for the [**Flutter News App Full Source Code Toolkit**](https://github.com/flutter-news-app-full-source-code). It defines a generic, abstract interface (`DataClient<T>`) for interacting with data resources of type `T`. This interface is designed to handle operations for *both* user-scoped resources (where data is specific to a user) and global resources (where data is not tied to a specific user, e.g., admin-managed content). The optional `userId` parameter in methods is used to differentiate between these two use cases.
