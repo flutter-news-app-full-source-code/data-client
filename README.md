@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://avatars.githubusercontent.com/u/202675624?s=400&u=dc72a2b53e8158956a3b672f8e52e39394b6b610&v=4" alt="Flutter News App Toolkit Logo" width="220">
   <h1>Data Client</h1>
-  <p><strong>The essential shared Dart package defining generic data access interfaces for the Flutter News App Toolkit.</strong></p>
+  <p><strong>The essential generic data access interfaces for the Flutter News App Toolkit.</strong></p>
 </div>
 
 <p align="center">
